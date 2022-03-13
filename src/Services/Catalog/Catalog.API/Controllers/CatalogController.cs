@@ -13,15 +13,14 @@ public class CatalogController : ControllerBase
     private readonly IProductRepository _productRepository;
     private readonly Logger<CatalogController> _logger;
 
-    public CatalogController(IProductRepository productRepository, Logger<CatalogController> logger)
+    public CatalogController(IProductRepository productRepository)
     {
         this._productRepository = productRepository;
-        this._logger = logger;
     }
 
 
     [HttpGet]
-    [ProducesResponseType(typeof(IList<Product>), (int)HttpStatusCode.OK)]
+    //[ProducesResponseType(typeof(IList<Product>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<IList<Product>>> GetProduct()
     {
         var products = await _productRepository.GetProducts();
@@ -80,10 +79,13 @@ public class CatalogController : ControllerBase
         return Ok(await _productRepository.UpdateProduct(product));
     }
 
-    //[ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
-    //public async Task<ActionResult> DeleteProductById(string id)
-    //{
-    //    return Ok(await _productRepository.DeleteProduct(id));
-    //}
+    [HttpGet]
+    [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult> DeleteProductById(string id)
+    {
+        return Ok(await _productRepository.DeleteProduct(id));
+    }
+
+
 
 }
