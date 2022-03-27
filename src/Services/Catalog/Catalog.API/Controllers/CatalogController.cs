@@ -18,6 +18,23 @@ public class CatalogController : ControllerBase
         this._productRepository = productRepository;
     }
 
+    [HttpGet]
+    public string Login(string id)
+    {
+        return $"Login {id}";
+    }
+
+    [HttpGet]
+    public string GetName()
+    {
+        return "My NAME IS Success!";
+    }
+
+    [HttpGet]
+    public string LoginOut(string id)
+    {
+        return $"Login {id}";
+    }
 
     [HttpGet]
     //[ProducesResponseType(typeof(IList<Product>), (int)HttpStatusCode.OK)]
