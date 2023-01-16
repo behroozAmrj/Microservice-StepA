@@ -1,0 +1,8 @@
+// for running multiple mongodb in docker use below command
+docker run -d -p 27789:27987 --name mongo-instance-a --port 27789
+
+//Run docker 
+ docker-compose -f .\docker-compose.yml -f .\docker-compose.override.yml up -d
+
+ // re-building docker
+  docker-compose -f .\docker-compose.yml -f .\docker-compose.override.yml up --build

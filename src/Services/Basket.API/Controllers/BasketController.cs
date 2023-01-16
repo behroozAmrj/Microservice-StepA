@@ -1,6 +1,6 @@
 ﻿using Basket.API.Entities;
+using Basket.API.GrpcService;
 using Basket.API.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -11,14 +11,20 @@ namespace Basket.API.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository _basketRepository;
-        public BasketController(IBasketRepository basketRepository)
+        private readonly DiscountGrpcService _discountGrpcService;
+        private readonly ILogger<BasketController> logger;
+
+        public BasketController(IBasketRepository basketRepository 
+                                ,DiscountGrpcService discountGrpcService 
+                                ,ILogger<BasketController> logger)
         {
             this._basketRepository = basketRepository;
+            this._discountGrpcService = discountGrpcService;
+            this.logger = logger;
         }
 
 
         [HttpGet]
-        
         [ProducesResponseType(typeof(ShoppingCart) , (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ShoppingCart>> GetBasket(string userNamme)
         { 
@@ -30,6 +36,15 @@ namespace Basket.API.Controllers
         [ProducesResponseType(typeof(ShoppingCart), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ShoppingCart>> UpdateBasket([FromBody] ShoppingCart basket)
         {
+            basket.Items.ForEach( async item =>
+            {
+                var coupon =  await _discountGrpcService.GetDiscount(item.ProductName);
+                if (coupon != null)
+                    item.Price -= coupon.Amount;
+                else
+                    logger.LogError($"{item.ProductName} NOT found!");
+
+            });
             return Ok(await _basketRepository.UpdateBsket(basket));
         }
 
@@ -41,5 +56,6 @@ namespace Basket.API.Controllers
             return Ok();
         }
 
+        
     }
 }

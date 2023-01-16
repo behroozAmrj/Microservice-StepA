@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "Discount.Grpc.Protos";
+
+service TestProtoService{
+	rpc GetTestResult(CreateTestRequest) returns(ReturnModel);
+}
+
+
+message CreateTestRequest{
+	int32 id = 1;
+}
+message ReturnModel{
+	string Name = 1;
+	string DateTime = 2;
+}
+

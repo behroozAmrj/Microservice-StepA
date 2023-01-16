@@ -19,24 +19,6 @@ public class CatalogController : ControllerBase
     }
 
     [HttpGet]
-    public string Login(string id)
-    {
-        return $"Login {id}";
-    }
-
-    [HttpGet]
-    public string GetName()
-    {
-        return "My NAME IS Success!";
-    }
-
-    [HttpGet]
-    public string LoginOut(string id)
-    {
-        return $"Login {id}";
-    }
-
-    [HttpGet]
     //[ProducesResponseType(typeof(IList<Product>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<IList<Product>>> GetProduct()
     {
@@ -103,6 +85,6 @@ public class CatalogController : ControllerBase
         return Ok(await _productRepository.DeleteProduct(id));
     }
 
-
+    
 
 }
