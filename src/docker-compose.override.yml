@@ -26,7 +26,24 @@ services:
       - "5432:5432"
     volumes:
       - "postgres_data:/var/lib/postgresql/data/" 
+
+
+  orderdb:
+    container_name: orderdb
+    environment:
+      SA_PASSWORD: "admin1234"
+      ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+      - "1433:1433"
 #
+  rabbitmq:
+    container_name: rabittmq
+    restart: always
+    ports:
+      - "5672:5972"
+      - "15672:15672"
+
   pgadmin:
     container_name: pgadmin
     environment:
@@ -91,3 +108,12 @@ services:
     ports:
       - "8003:80"
 
+  ordering.api:
+    container_name: ordering.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings__OrderingConnectionString=Data Source=orderdb;User ID=sa;Password=admin1234;Initial Catalog=Orderdb;Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;"
+    depends_on:
+      - orderdb
+    ports:
+      - "8004:80"

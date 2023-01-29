@@ -6,3 +6,14 @@ docker run -d -p 27789:27987 --name mongo-instance-a --port 27789
 
  // re-building docker
   docker-compose -f .\docker-compose.yml -f .\docker-compose.override.yml up --build
+
+  // docker run multiple sqlserver instance on different ports
+docker run -i -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=admin1234!@#$%^&*" -d -p 2019:1433 --name Sqlserver_ins_2019 mcr.microsoft.com/mssql/server:2017-latest
+docker run -i -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=admin1234!@#$%^&*" -d -p 2017:1433 --name Sqlserver_ins_2019 mcr.microsoft.com/mssql/server:2017-latest
+
+
+// change rabbitmq user name and password in docker container
+ docker exec -u 0 -it rabittmq  /bin/bash
+ apt-get update
+ apt-get install nano
+ nano /etc/rabbitmq/rabbitmq.conf
