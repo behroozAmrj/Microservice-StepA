@@ -1,7 +1,10 @@
+using Basket.API;
 using Basket.API.GrpcService;
 using Basket.API.Repositories;
 using Discount.Grpc.Protos;
+using MassTransit;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,8 +31,64 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
 
 builder.Services.AddScoped<DiscountGrpcService>();
 builder.Services.AddHttpContextAccessor();
+
+
+//builder.Services.AddMassTransit(busConfigurator =>
+//{
+//    busConfigurator.SetKebabCaseEndpointNameFormatter();
+//    busConfigurator.UsingRabbitMq((context, busFactoryConfigurator) =>
+//    {
+//        busFactoryConfigurator.Host("rabbitmq", hostConfigurator => { });
+//    });
+//});
+
+
+//builder.Services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+//{
+//    cfg.Host(new Uri(RabbitMqSettings.Uri),
+//    hst => 
+//    {
+//        hst.Username(RabbitMqSettings.UserName);
+//        hst.Password(RabbitMqSettings.Password);
+//    });
+//}));
+//
+//builder.Services.AddSingleton<IBus>(prov => prov.GetRequiredService<IBusControl>());
+
+//builder.Services.AddMassTransit(x =>
+//{
+//    x.UsingRabbitMq();
+//});
+//builder.Services.AddMassTransitHostedService();
+
+//builder.Services.AddMassTransitHostedService();
+
+//builder.Services.AddMassTransit(config => {
+//    config.UsingRabbitMq((ctx, cfg) => {
+//        cfg.Host("rabbitmq://user:mypass@localhost:5672");
+//    });
+//});
+
+//builder.Services.AddMassTransitHostedService();
+
+builder.Services.AddMassTransit(config =>
+{
+    // elided...
+
+    config.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h => {
+            h.Username(RabbitMqSettings.UserName);
+            h.Password(RabbitMqSettings.Password);
+        });
+
+    });
+});
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 var app = builder.Build();
 
+//=========================================================================
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

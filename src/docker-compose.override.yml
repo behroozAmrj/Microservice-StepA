@@ -38,10 +38,16 @@ services:
       - "1433:1433"
 #
   rabbitmq:
-    container_name: rabittmq
+    container_name: "rabittmq"
     restart: always
+   # hostname: "rabbitmq"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=mypass
     ports:
-      - "5672:5972"
+    # instance
+      - "5672:5672"
+    # Web
       - "15672:15672"
 
   pgadmin:

@@ -38,4 +38,9 @@ public class OrderContext : DbContext
         return base.SaveChangesAsync(cancellationToken);
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        
+    }
+
 }

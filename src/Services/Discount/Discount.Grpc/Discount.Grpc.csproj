@@ -9,6 +9,10 @@
     <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Protos\run.proto" />
+  </ItemGroup>
+
 	<ItemGroup>
 		
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
@@ -24,6 +28,7 @@
 
 	<ItemGroup>
 	  <Protobuf Include="Protos\discount.proto" GrpcServices="Server" />
+	  <Protobuf Include="Protos\run.proto" GrpcServices="Server" />
 	  <Protobuf Include="Protos\test.proto" GrpcServices="Server" />
 	</ItemGroup>
 

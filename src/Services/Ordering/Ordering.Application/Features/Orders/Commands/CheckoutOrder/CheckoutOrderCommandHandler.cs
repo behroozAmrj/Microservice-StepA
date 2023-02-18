@@ -26,7 +26,7 @@ namespace Ordering.Application.Features.Orders.Commands.CheckoutOrder
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<Guid> Handle(CheckoutOrderCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CheckoutOrderCommand request, CancellationToken cancellationToken) 
         {
             var orderEntity = _mapper.Map<Order>(request);
             var newOrder = await _orderRepository.AddAsync(orderEntity);

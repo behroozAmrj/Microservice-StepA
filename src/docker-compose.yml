@@ -20,7 +20,7 @@ services:
     image: portainer/portainer-ce
   
   rabbitmq:
-    image: bitnami/rabbitmq
+    image: rabbitmq:3.8-management-alpine
 
 #================================= Services =========================================
   catalog.api:
