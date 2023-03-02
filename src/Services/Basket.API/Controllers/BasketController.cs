@@ -17,14 +17,14 @@ namespace Basket.API.Controllers
         private readonly IBasketRepository _basketRepository;
         private readonly DiscountGrpcService _discountGrpcService;
         private readonly IMapper _mapper;
-        private readonly IPublishEndpoint _publishEndpoint;
+         private readonly IPublishEndpoint _publishEndpoint;
         private readonly ILogger<BasketController> _logger;
 
-        public BasketController(IBasketRepository basketRepository 
-                                ,DiscountGrpcService discountGrpcService 
-                                ,IMapper mapper
-                                ,IPublishEndpoint publishEndpoint
-                                ,ILogger<BasketController> logger)
+        public BasketController(IBasketRepository basketRepository
+                                , DiscountGrpcService discountGrpcService
+                                , IMapper mapper
+                                , IPublishEndpoint publishEndpoint
+                                , ILogger<BasketController> logger)
         {
             this._basketRepository = basketRepository;
             this._discountGrpcService = discountGrpcService;
@@ -35,9 +35,9 @@ namespace Basket.API.Controllers
 
 
         [HttpGet]
-        [ProducesResponseType(typeof(ShoppingCart) , (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ShoppingCart), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ShoppingCart>> GetBasket(string userNamme)
-        { 
+        {
             var baseket = await _basketRepository.GetBasket(userNamme);
             return Ok(baseket ?? new ShoppingCart(userNamme));
         }
@@ -46,9 +46,9 @@ namespace Basket.API.Controllers
         [ProducesResponseType(typeof(ShoppingCart), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<ShoppingCart>> UpdateBasket([FromBody] ShoppingCart basket)
         {
-            basket.Items.ForEach(  async item =>
+            basket.Items.ForEach(async item =>
             {
-                var coupon = await   _discountGrpcService.GetDiscount(item.ProductName);
+                var coupon = await _discountGrpcService.GetDiscount(item.ProductName);
                 if (coupon != null)
                     item.Price -= coupon.Amount;
                 else
@@ -72,19 +72,19 @@ namespace Basket.API.Controllers
         public async Task<IActionResult> Checkout([FromBody] BasketCheckout basketCheckout)
         {
             //get existing basket with total price
-             _publishEndpoint.Publish(new BasketCheckoutEvent() { UserName = "Beh" } ).Wait();
-            var basket  = await _basketRepository.GetBasket(basketCheckout.UserName);
+            await _publishEndpoint.Publish(new BasketCheckoutEvent() { UserName = "Beh" });
+            var basket = await _basketRepository.GetBasket(basketCheckout.UserName);
             if (basket == null)
                 return BadRequest();
 
             // cerate basket checkoutEvent -- Set TotalPrice on basketchekcout event message
 
             var eventMessge = _mapper.Map<BasketCheckoutEvent>(basketCheckout);
-            eventMessge.TotalPrice= basket.TotalPrice;
+            eventMessge.TotalPrice = basket.TotalPrice;
             await _publishEndpoint.Publish(eventMessge);
 
             //remove the basket
-            await _basketRepository.DeleteBasket(basket.UserName);
+            //await _basketRepository.DeleteBasket(basket.UserName);
 
             return Accepted();
         }

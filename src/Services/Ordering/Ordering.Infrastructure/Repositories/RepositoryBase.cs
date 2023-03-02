@@ -19,9 +19,18 @@ public class RepositoryBase<T> : IAsyncRepository<T> where T : EntityBase
     }
     public async Task<T> AddAsync(T entity)
     {
+        try
+        {
         this._entity.Add(entity);
         await _dbContext.SaveChangesAsync();    
         return entity;
+
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
     }
 
     public async Task DeleteAsync(T entity)

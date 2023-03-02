@@ -45,6 +45,7 @@ namespace Ordering.Application.Features.Orders.Commands.CheckoutOrder
             try
             {
                 //await _emailService.SendEmail(email);
+                _logger.LogInformation($"Email is Sent . . .  ");
             }
             catch (Exception ex)
             {
